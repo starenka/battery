@@ -13,6 +13,12 @@ AVAILABLE_KEYS = 'LEFT RIGHT DOWN UP a s d f g h j'.split()
 KEYS = dict(
     [(key, getattr(curses, 'KEY_%s' % key, ord(key[0]))) for key in AVAILABLE_KEYS])
 
+# We need to init mixer before pygame initializations, smaller buffer should avoid lags
+pygame.mixer.pre_init(frequency=44100, size=-16, channels=2, buffer=512)
+pygame.init()
+# Get 4 channels for each key + one for system sounds
+pygame.mixer.set_num_channels(4 * len(KEYS) + 1)
+
 banks, banks_iter = load_banks(args.bank_kit)
 if not banks and not banks_iter:
     sys.exit('Can\'t load bank kit file "%s". Are you sure about this?' % file)
@@ -23,12 +29,6 @@ screen = curses.initscr()
 curses.noecho()
 curses.curs_set(0)
 screen.keypad(1)
-
-# We need to init mixer before pygame initializations, smaller buffer should avoid lags
-pygame.mixer.pre_init(frequency=44100, size=-16, channels=2, buffer=512)
-pygame.init()
-# Get 4 channels for each key + one for system sounds
-pygame.mixer.set_num_channels(4 * len(KEYS) + 1)
 
 
 def bank_flash():
