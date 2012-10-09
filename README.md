@@ -11,7 +11,6 @@ I use curses for UI and key grabbing and pygame for audio output.
 
 - refactor
 - better UI
-- banks conf file switching w/ cli args
 - get rid of hardcoded values
 - maybe get rid of pygame (quite too heavy dep)
 - maybe some basic sound effects or DSP?
