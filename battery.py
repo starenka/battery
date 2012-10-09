@@ -22,25 +22,25 @@ pygame.mixer.set_num_channels(4 * len(KEYS) + 1)
 banks, banks_iter = load_banks(args.bank_kit)
 if not banks and not banks_iter:
     sys.exit('Can\'t load bank kit file "%s". Are you sure about this?' % file)
-curr_bank, bank_changes, reverse = banks_iter.next(), 0, False
+curr_bank, curr_bank_nr, reverse = banks_iter.next(), 1, False
 
 # init curses
 screen = curses.initscr()
 curses.noecho()
 curses.curs_set(0)
 screen.keypad(1)
+LINES, COLS = screen.getmaxyx()
 
-
-def bank_flash():
-    screen.addstr(0, 0, 'Bank: #%s' % (str(bank_changes % len(banks) + 1).zfill(2)), curses.A_REVERSE)
+def bank_flash(curr_bank_nr):
+    screen.addstr(0, 0, 'Bank: #%s' % (str(curr_bank_nr).zfill(2)), curses.A_REVERSE)
 
 
 def tray_msg(msg, row=0):
-    BOTTOM = 25 #unhordcode
-    screen.addstr(BOTTOM - row, 0, msg)
+    screen.addstr(LINES - 1 - row, 0, msg)
 
 
-bank_flash(), tray_msg('Use %s keys to play. "SPACE" to change bank, "w" to reverse, "ESC" or "q" to exit.' % ', '.join(
+bank_flash(curr_bank_nr)
+tray_msg('Use %s keys to play. "SPACE" to change bank, "w" to reverse, "ESC" or "q" to exit.' % ', '.join(
     map(lambda x: '"%s"' % x, AVAILABLE_KEYS)))
 
 while True:
@@ -49,11 +49,11 @@ while True:
         break
     elif event == ord(' '):
         curr_bank = banks_iter.next()
-        bank_changes += 1
-        bank_flash()
+        curr_bank_nr += 1 if curr_bank_nr < len(banks) else -(len(banks) -1)
+        bank_flash(curr_bank_nr)
     elif event == ord('w'):
         reverse = not reverse
-        tray_msg('reversed' if reverse else ' ' * 8, row=1)
+        tray_msg('mode: %s' % 'reversed' if reverse else 'normal  ', row=1)
     for key, code in KEYS.iteritems():
         if event == code:
             try:
