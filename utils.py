@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import os, itertools, json, wave
+import os, sys, itertools, json, wave
 
 import audioop
 from pygame.mixer import Sound
@@ -26,9 +26,17 @@ def reverse_wav_file(file_path):
 
 
 def load_banks(bank_kit):
-    with open(os.path.join(BASE_DIR, 'banks', '%s.json' % bank_kit)) as f:
-        banks = json.load(f)
-        iter = itertools.cycle([{k: (Sound(os.path.join(SAMPLES_DIR, v)),
-                                     Sound(reverse_wav_file(os.path.join(SAMPLES_DIR, v))))
-                                 for k, v in bank.iteritems() if v} for bank in banks])
-        return banks, iter
+    """
+        Loads bank kit definition from file and populates banks
+        with Sound instance (both original wave & reversed one)
+    """
+    file = os.path.join(BASE_DIR, 'banks', '%s.json' % bank_kit)
+    try:
+        with open(file) as f:
+            banks = json.load(f)
+            iter = itertools.cycle([{k: (Sound(os.path.join(SAMPLES_DIR, v)),
+                                         Sound(reverse_wav_file(os.path.join(SAMPLES_DIR, v))))
+                                     for k, v in bank.iteritems() if v} for bank in banks])
+            return banks, iter
+    except IOError:
+        sys.exit('Can\'t load bank kit file "%s". Are you sure about this?' % file)
