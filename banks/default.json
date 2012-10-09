@@ -1,0 +1,36 @@
+[
+    {
+        "LEFT":"Kawai XD-5 Kit/03 Dry Kick.wav",
+        "RIGHT":"Kawai XD-5 Kit/18 JazzSnare.wav",
+        "UP":"Kawai XD-5 Kit/12 Multi Hat.wav",
+        "DOWN":"Kawai XD-5 Kit/10 Hard Hat.wav",
+
+        "s":"Kawai XD-5 Kit/33 Plant Tom.wav",
+        "a":"Kawai XD-5 Kit/34 PwrRoomLow.wav",
+        "d":"",
+
+        "f":"",
+        "g":"",
+        "h":"",
+        "j":""
+
+    },
+
+    {
+        "LEFT":"Kawai XD-5 Kit/01 FeelItKick.wav",
+        "RIGHT":"Kawai XD-5 Kit/20 Deep Snare.wav",
+        "UP":"Kawai XD-5 Kit/11 Loose Hat.wav",
+        "DOWN":"Kawai XD-5 Kit/62 Clap.wav",
+
+        "s":"",
+        "a":"",
+        "d":"",
+
+        "f":"",
+        "g":"",
+        "h":"",
+        "j":""
+    }
+]
+
+
