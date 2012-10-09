@@ -1,0 +1,4 @@
+*.py[co]
+.idea
+.hg
+samples/*/*wav_r.wav
