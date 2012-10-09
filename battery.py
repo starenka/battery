@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import curses, argparse
+import curses, argparse, sys
 
 import pygame
 from utils import load_banks
@@ -8,24 +8,28 @@ parser = argparse.ArgumentParser('Battery - a simple CLI & headless rompler')
 parser.add_argument('-b', '--bank-kit', action='store', dest='bank_kit', default='default')
 args = parser.parse_args()
 
-
-AVAILABLE_KEYS = 'LEFT RIGHT DOWN UP a s d f g h j'.split() #it's all MaKeyMaKey has, except SPC and w
+# That's all what MaKeyMaKey has in stock setting, except 'SPC' and 'w'
+AVAILABLE_KEYS = 'LEFT RIGHT DOWN UP a s d f g h j'.split()
 KEYS = dict(
     [(key, getattr(curses, 'KEY_%s' % key, ord(key[0]))) for key in AVAILABLE_KEYS])
 
+banks, banks_iter = load_banks(args.bank_kit)
+if not banks and not banks_iter:
+    sys.exit('Can\'t load bank kit file "%s". Are you sure about this?' % file)
+curr_bank, bank_changes, reverse = banks_iter.next(), 0, False
+
+# init curses
 screen = curses.initscr()
 curses.noecho()
 curses.curs_set(0)
 screen.keypad(1)
 
-#we need to init mixer before pygame initializations, smaller buffer should avoid lags
+# We need to init mixer before pygame initializations, smaller buffer should avoid lags
 pygame.mixer.pre_init(frequency=44100, size=-16, channels=2, buffer=512)
 pygame.init()
-#get 4 channels for each key
+# Get 4 channels for each key + one for system sounds
 pygame.mixer.set_num_channels(4 * len(KEYS) + 1)
 
-banks, banks_iter = load_banks(args.bank_kit)
-curr_bank, bank_changes, reverse = banks_iter.next(), 0, False
 
 def bank_flash():
     screen.addstr(0, 0, 'Bank: #%s' % (str(bank_changes % len(banks) + 1).zfill(2)), curses.A_REVERSE)
@@ -57,4 +61,6 @@ while True:
             except KeyError:
                 tray_msg('No sample defined for "%s" key\n' % key, row=1)
 
+# This should somehow restore terminal back, but it doesn't work all the time.
+# Call "reset" in your shell if you need to
 curses.endwin()
