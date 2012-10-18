@@ -1,6 +1,6 @@
 ## battery
 
-Battery is a simple sampler (or rompler if you wish) you can control only with keyboard. In fact only with couple keys. The goal was to have something to play samples I can control on a headless machine (I'm using [Rasberry Pi](http://www.raspberrypi.org/) and [MakeyMakey](http://www.makeymakey.com/) to control it right now). The philosophy is quite straightforward. Get some samples, copy them into samples directory and stick them into banks config file (right now only one is supported - see banks/default.json). You can specify as many banks as you want.
+Battery is a simple sampler (or rompler if you wish) you can control only with keyboard. In fact only with couple keys. The goal was to have something to play samples I can control on a headless machine (I'm using [Rasberry Pi](http://www.raspberrypi.org/) and [MakeyMakey](http://www.makeymakey.com/) to control it right now). The philosophy is quite straightforward. Get some samples, copy them into samples directory and stick them into banks config file (see `banks` directory). You can specify as many banks as you want. Once you're ready, fire up battery with your custom bank file: `python battery.py -b my_bank.json` or just do `python battery.py` to use default one.
 
 Once you've started the sampler you can switch banks with `space`. Use `w` to toggle sample reversing on and off. `a`, `s`, `d`, `f`, `g`, `h`, `j` and `arrow keys` are free slots you can use for your samples. These keys are almost everything MakeyMakey has in stock setting. To close the sampler press `q` or `ESC`.
 
