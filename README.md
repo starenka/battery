@@ -6,6 +6,8 @@ Once you've started the sampler you can switch banks with `space`. Use `w` to to
 
 I use curses for UI and key grabbing and pygame for audio output.
 
+I've bundled Kawai XD-5 drum samples from Hydrogen, you can get more free samples by runing `get_samples.sh` script. It expects you to have wget and rar binaries on your system.
+
 
 ## todo
 
