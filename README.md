@@ -9,10 +9,8 @@ I use curses for UI and key grabbing and pygame for audio output.
 I've bundled Kawai XD-5 drum samples from Hydrogen, you can get more free samples by runing `get_samples.sh` script. It expects you to have wget and rar binaries on your system.
 
 
-## todo
+## TODO
 
 - refactor
-- better UI
-- get rid of hardcoded values
 - maybe get rid of pygame (quite too heavy dep)
 - maybe some basic sound effects or DSP?

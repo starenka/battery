@@ -32,7 +32,7 @@ def reverse_wav_file(file_path):
 def load_banks(bank_kit):
     """
         Loads bank kit definition from file and populates banks
-        with Sound instance (both original wave & reversed one)
+        with Sound instances (both original wave & reversed one)
     """
     file = os.path.join(BASE_DIR, 'banks', '%s.json' % bank_kit)
     try:
