@@ -1,0 +1,7 @@
+#!/bin/sh
+
+#set key repeat rate to 20 presses/sec after 250msec delay
+xset r rate 250 20
+./battery.py
+#reset terminal jic it stays messed up after curses
+reset
