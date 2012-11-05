@@ -8,7 +8,7 @@ parser = argparse.ArgumentParser('Battery - a simple CLI & headless rompler')
 parser.add_argument('-b', '--bank-kit', action='store', dest='bank_kit', default='default')
 args = parser.parse_args()
 
-VERSION = 0.1
+VERSION = 0.2
 # That's all what MaKeyMaKey has in stock setting, except 'SPC' and 'w'
 AVAILABLE_KEYS = 'LEFT RIGHT DOWN UP a s d f g h j'.split()
 KEYS = dict(
@@ -22,7 +22,7 @@ pygame.mixer.set_num_channels(4 * len(KEYS) + 1)
 
 banks, banks_iter = load_banks(args.bank_kit)
 if not banks and not banks_iter:
-    sys.exit('Can\'t load bank kit file "%s". Are you sure about this?' % file)
+    sys.exit('Can\'t load bank kit file "%s". Are you sure about this?' % args.bank_kit)
 curr_bank, curr_bank_nr, reverse = banks_iter.next(), 1, False
 
 # init curses
@@ -35,7 +35,7 @@ LINES, COLS = screen.getmaxyx()
 def bank_flash(curr_bank_nr):
     screen.addstr(1, 0, 'Bank: #%s' % (str(curr_bank_nr).zfill(2)), curses.A_REVERSE)
     for line, kv in enumerate(sorted(banks[curr_bank_nr - 1].iteritems()), 4):
-        screen.insstr(line, 0, '%s%s' % (' ' * (7 - len(kv[0])), kv[1].ljust(COLS - 1)))
+        screen.insstr(line, 0, '%s%s' % (' ' * (7 - len(kv[0])), kv[1]['sample'][:-4].ljust(COLS - 1)))
         screen.insstr(line, 0, kv[0], curses.A_REVERSE)
 
 

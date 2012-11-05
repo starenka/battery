@@ -1,35 +1,34 @@
 [
     {
-        "LEFT":"Kawai XD-5 Kit/03 Dry Kick.wav",
-        "RIGHT":"Kawai XD-5 Kit/18 JazzSnare.wav",
-        "UP":"Kawai XD-5 Kit/12 Multi Hat.wav",
-        "DOWN":"Kawai XD-5 Kit/10 Hard Hat.wav",
+        "LEFT":{"sample":"Kawai XD-5 Kit/03 Dry Kick.wav","volume":100},
+        "RIGHT":{"sample":"Kawai XD-5 Kit/18 JazzSnare.wav","volume":95},
+        "UP":{"sample":"Kawai XD-5 Kit/12 Multi Hat.wav","volume":90},
+        "DOWN":{"sample":"Kawai XD-5 Kit/10 Hard Hat.wav","volume":90},
 
-        "s":"Kawai XD-5 Kit/33 Plant Tom.wav",
-        "a":"Kawai XD-5 Kit/34 PwrRoomLow.wav",
-        "d":"Kawai XD-5 Kit/59 Ac Rim.wav",
+        "s":{"sample":"Kawai XD-5 Kit/33 Plant Tom.wav","volume":70},
+        "a":{"sample":"Kawai XD-5 Kit/34 PwrRoomLow.wav","volume":70},
+        "d":{"sample":"Kawai XD-5 Kit/59 Ac Rim.wav","volume":90},
 
-        "f":"Kawai XD-5 Kit/58 Tambourine.wav",
-        "g":"Kawai XD-5 Kit/50 Cowbell.wav",
-        "h":"Kawai XD-5 Kit/61 Twin Tabla.wav",
-        "j":"Kawai XD-5 Kit/62 Clap.wav"
-
+        "f":{"sample":"Kawai XD-5 Kit/58 Tambourine.wav","volume":90},
+        "g":{"sample":"Kawai XD-5 Kit/50 Cowbell.wav","volume":90},
+        "h":{"sample":"Kawai XD-5 Kit/61 Twin Tabla.wav","volume":80},
+        "j":{"sample":"Kawai XD-5 Kit/62 Clap.wav","volume":90}
     },
 
     {
-        "LEFT":"Kawai XD-5 Kit/01 FeelItKick.wav",
-        "RIGHT":"Kawai XD-5 Kit/20 Deep Snare.wav",
-        "UP":"Kawai XD-5 Kit/11 Loose Hat.wav",
-        "DOWN":"Kawai XD-5 Kit/41 RezoCymbal.wav",
+        "LEFT":{"sample":"Kawai XD-5 Kit/01 FeelItKick.wav","volume":100},
+        "RIGHT":{"sample":"Kawai XD-5 Kit/20 Deep Snare.wav","volume":95},
+        "UP":{"sample":"Kawai XD-5 Kit/11 Loose Hat.wav","volume":90},
+        "DOWN":{"sample":"Kawai XD-5 Kit/41 RezoCymbal.wav","volume":90},
 
-        "s":"Kawai XD-5 Kit/33 Plant Tom.wav",
-        "a":"Kawai XD-5 Kit/34 PwrRoomLow.wav",
-        "d":"Kawai XD-5 Kit/59 Ac Rim.wav",
+        "s":{"sample":"Kawai XD-5 Kit/33 Plant Tom.wav","volume":70},
+        "a":{"sample":"Kawai XD-5 Kit/34 PwrRoomLow.wav","volume":70},
+        "d":{"sample":"Kawai XD-5 Kit/59 Ac Rim.wav","volume":80},
 
-        "f":"Kawai XD-5 Kit/58 Tambourine.wav",
-        "g":"Kawai XD-5 Kit/50 Cowbell.wav",
-        "h":"Kawai XD-5 Kit/61 Twin Tabla.wav",
-        "j":"Kawai XD-5 Kit/62 Clap.wav"
+        "f":{"sample":"Kawai XD-5 Kit/58 Tambourine.wav","volume":90},
+        "g":{"sample":"Kawai XD-5 Kit/50 Cowbell.wav","volume":90},
+        "h":{"sample":"Kawai XD-5 Kit/61 Twin Tabla.wav","volume":90},
+        "j":{"sample":"Kawai XD-5 Kit/62 Clap.wav","volume":90}
     }
 ]
 

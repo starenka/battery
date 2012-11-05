@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import os, itertools, json, wave
+from __future__ import division
+import os, itertools, json, wave, audioop
 
-import audioop
 from pygame.mixer import Sound
 
 BASE_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -28,6 +28,15 @@ def reverse_wav_file(file_path):
             fr.writeframesraw(reversed)
     return reversed_file
 
+def _make_samples(slot):
+    """
+        Makes Sound instances tuple and sets Sound volumes
+    """
+    sample_file = os.path.join(SAMPLES_DIR, slot['sample'])
+    samples = (Sound(sample_file), Sound(reverse_wav_file(sample_file)))
+    for one in samples:
+        one.set_volume(slot.get('volume', 100) / 100)
+    return samples
 
 def load_banks(bank_kit):
     """
@@ -38,9 +47,9 @@ def load_banks(bank_kit):
     try:
         with open(file) as f:
             banks = json.load(f)
-            iter = itertools.cycle([{k: (Sound(os.path.join(SAMPLES_DIR, v)),
-                                         Sound(reverse_wav_file(os.path.join(SAMPLES_DIR, v))))
-                                     for k, v in bank.iteritems() if v} for bank in banks])
+            iter = itertools.cycle([{k: _make_samples(slot)
+                                    for k, slot in bank.iteritems() if slot['sample']} for bank in banks])
+
             return banks, iter
-    except IOError:
+    except IOError, e:
         return None, None
