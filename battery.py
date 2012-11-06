@@ -17,8 +17,7 @@ KEYS = dict(
 # We need to init mixer before pygame initializations, smaller buffer should avoid lags
 pygame.mixer.pre_init(frequency=44100, size=-16, channels=2, buffer=512)
 pygame.init()
-# Get 4 channels for each key + one for system sounds
-pygame.mixer.set_num_channels(4 * len(KEYS) + 1)
+pygame.mixer.set_num_channels(8 * len(KEYS)) # Get 8 channels for each key
 
 banks, banks_iter = load_banks(args.bank_kit)
 if not banks and not banks_iter:
