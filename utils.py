@@ -16,16 +16,15 @@ def reverse_wav_file(file_path):
     if os.path.exists(reversed_file):
         return reversed_file
 
-    with open(file_path, 'r') as f:
+    with open(file_path, 'r') as f, open(reversed_file, 'w') as fr:
         f = wave.open(f)
         frames = f.getnframes()
         data = f.readframes(frames)
         reversed = audioop.reverse(data, 2) # '2' is the sample width
-        with open(reversed_file, 'w') as fr:
-            fr = wave.open(fr)
-            # Must set params but leave # of frames empty
-            fr.setparams((2, 2, 44100, '', 'NONE', 'not compressed'))
-            fr.writeframesraw(reversed)
+        fr = wave.open(fr)
+        # Must set params but leave # of frames empty
+        fr.setparams((2, 2, 44100, '', 'NONE', 'not compressed'))
+        fr.writeframesraw(reversed)
     return reversed_file
 
 def _make_samples(slot):
