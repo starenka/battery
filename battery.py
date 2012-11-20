@@ -1,9 +1,13 @@
 #!/usr/bin/env python
-import curses, argparse, sys
+import curses
+import argparse
+import sys
+import threading
+import Queue
 
 import pygame
-from utils import load_banks
 
+from utils import load_banks
 import cui
 
 
@@ -24,6 +28,20 @@ def init_mixer():
     pygame.init()
     pygame.mixer.set_num_channels(8 * len(KEYS)) # Get 8 channels for each key
 
+class MusicThread(threading.Thread):
+    def __init__(self):
+        threading.Thread.__init__(self)
+        self.q = Queue.Queue()
+        self.running = True
+
+    def run(self):
+        while self.running:
+            self.q.get().play()
+
+    def stop():
+        self.running = False
+
+
 
 if __name__ == "__main__":
     # That's all what MaKeyMaKey has in stock setting, except 'SPC' and 'w'
@@ -39,13 +57,17 @@ if __name__ == "__main__":
     cui = cui.CUI(VERSION)
     cui.show_bank(bank_desc, bank_nr)
 
+    m_thread = MusicThread()
+    m_thread.daemon = True
+    m_thread.start()
+
     while True:
         event = cui.screen.getch()
 
         if event in (ord('q'), 27): #q or ESC
             break
 
-        elif event == ord(' '): # switch bank
+        elif event == ord(' '): # switch bank on SPACE
             bank_desc, bank_samples, bank_nr = banks_iter.next()
             cui.show_bank(bank_desc, bank_nr)
             continue
@@ -53,7 +75,7 @@ if __name__ == "__main__":
         try:
             key = KEYS[event]
             try:
-                bank_samples[key].play()
+                m_thread.q.put(bank_samples[key])
             except KeyError:
                 cui.tray_msg('No sample defined for "%s" key\n' % key, row=1, style=curses.A_DIM)
         except KeyError:
@@ -62,3 +84,4 @@ if __name__ == "__main__":
     # This should somehow restore terminal back, but it doesn't work all the time.
     # Call "reset" in your shell if you need to
     curses.endwin()
+    sys.exit(0)
