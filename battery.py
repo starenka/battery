@@ -31,39 +31,23 @@ def init_mixer():
     pygame.init()
     pygame.mixer.set_num_channels(8 * len(KEYS)) # Get 8 channels for each key
 
-class MusicThread(threading.Thread):
+class LoopThread(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
-        self.q = Queue.Queue()
-        self.running = False
-
-    def run(self):
-        self.running = True
-        while self.running:
-            self.q.get().play()
-
-    def stop(self):
-        self.running = False
-
-class LoopThread(threading.Thread):
-    def __init__(self, music_thread):
-        threading.Thread.__init__(self)
-        self.mt = music_thread
         self.loop = []
         self.running = False
 
     def run(self):
-        self.mt.q.put(self.loop.next()[1])
-#        try:
-#            self.mt.q.put(self.loop.next()[1])
-#        except StopIteration:
-#            return
+        try:
+            self.loop.next()[1].play()
+        except StopIteration:
+            return
 
         self.running = True
         while self.running:
             sleep_time, sample = self.loop.next()
             time.sleep(sleep_time)
-            self.mt.q.put(sample)
+            sample.play()
 
     def stop(self):
         self.running = False
@@ -83,16 +67,15 @@ if __name__ == "__main__":
     cui = cui.CUI(VERSION)
     cui.show_bank(bank_desc, bank_nr)
 
-    m_thread = MusicThread()
-    m_thread.daemon = True
-    m_thread.start()
-
-
     LOOP_recording = False
     LOOPS = []
 
+    t_prev = None
+    current_loop = None
+
     while True:
         event = cui.screen.getch()
+        t = time.time()
 
         if event in (ord('q'), 27): #q or ESC
             break
@@ -103,45 +86,43 @@ if __name__ == "__main__":
             continue
 
         elif event == ord('r'): # start/stop recording new loop
-            t = time.time()
             if LOOP_recording is False: #start new loop
-                lt = LoopThread(m_thread)
-                lt.daemon = True
-                LOOPS.append(lt)
+                current_loop = LoopThread()
+                current_loop.daemon = True
+                LOOPS.append(current_loop)
             else:
                 try:
-                    end_time = LOOPS[-1].loop[-1][0]
+                    dummy = current_loop.loop[-1]
                 except IndexError:
                     del(LOOPS[-1])
                     LOOP_recording = not LOOP_recording
+                    current_loop = None
+                    cui.tray_msg("Recording: %s" % LOOP_recording)
                     continue
 
-                #re-count the times to relative differences
-                for i in range(len(LOOPS[-1].loop)-1, 0 , -1):
-                    LOOPS[-1].loop[i][0] -= LOOPS[-1].loop[i-1][0]
+                # set the wait "before first sample" to time between last "sound" and "end recording"
+                current_loop.loop[0][0] = t - t_prev
 
-                LOOPS[-1].loop[0][0] = t - end_time
-                f = open("out.dat", "w")
-                f.write(str(LOOPS[-1].loop))
-                f.close()
-                LOOPS[-1].loop = itertools.cycle(LOOPS[-1].loop)
-                LOOPS[-1].start()
+                current_loop.loop = itertools.cycle(current_loop.loop)
+                current_loop.start()
             LOOP_recording = not LOOP_recording
+            cui.tray_msg("Recording: %s" % LOOP_recording)
 
-        elif event == ord('p'): # purge all loops
-            for loop in LOOPS:
-                loop.stop()
-
-            LOOPS = []
+        elif event == ord('p'): # stop & delete last loop
+            try:
+                LOOPS[-1].stop()
+                del(LOOPS[-1])
+            except IndexError:
+                LOOPS = []
 
         try:
-            t = time.time()
             key = KEYS[event]
             try:
                 sample = bank_samples[key]
+                sample.play()
                 if LOOP_recording:
-                    LOOPS[-1].loop.append([time.time(), sample])
-                m_thread.q.put(sample)
+                    current_loop.loop.append([t-t_prev, sample])
+                t_prev = t
             except KeyError:
                 cui.tray_msg('No sample defined for "%s" key\n' % key, row=1, style=curses.A_DIM)
         except KeyError:

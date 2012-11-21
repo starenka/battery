@@ -16,7 +16,7 @@ class CUI(object):
 
     def _init_cui(self):
         self.screen.addstr(0, 0, 'Battery v%s - a simple rompler'.center(self.COLS) % self.version, curses.A_BOLD)
-        for key, text in (('q', 'exit'), ('SPACE', 'change bank')):
+        for key, text in (('r', 'loop record/play'), ('p', 'delete last loop'), ('q', 'exit'), ('SPACE', 'change bank')):
             self.screen.insstr(self.LINES - 1, 0, ' %s\t' % text)
             self.screen.insstr(self.LINES - 1, 0, key, curses.A_REVERSE)
 
