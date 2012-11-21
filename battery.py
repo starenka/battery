@@ -7,7 +7,7 @@ import cui
 from utils import load_banks
 
 
-VERSION = 0.2
+VERSION = 0.3
 # That's all what MaKeyMaKey has in stock setting, except 'SPC' and 'w'
 AVAILABLE_KEYS = 'LEFT RIGHT DOWN UP a s d f g h j'.split()
 KEYS = dict(
