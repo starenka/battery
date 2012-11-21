@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import curses, argparse, sys, time, threading, itertools, Queue
+import curses, argparse, sys, time, threading, itertools
 
 import pygame
 
