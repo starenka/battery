@@ -1,16 +1,10 @@
 #!/usr/bin/env python
-import curses
-import argparse
-import sys
-import time
-import threading
-import itertools
-import Queue
+import curses, argparse, sys, time, threading, itertools, Queue
 
 import pygame
 
-from utils import load_banks
 import cui
+from utils import load_banks
 
 
 VERSION = 0.2
@@ -67,11 +61,8 @@ if __name__ == "__main__":
     cui = cui.CUI(VERSION)
     cui.show_bank(bank_desc, bank_nr)
 
-    LOOP_recording = False
-    LOOPS = []
-
-    t_prev = None
-    current_loop = None
+    reverse, loop_recording, loops = False, False, []
+    t_prev, current_loop = 0, None
 
     while True:
         event = cui.screen.getch()
@@ -86,18 +77,18 @@ if __name__ == "__main__":
             continue
 
         elif event == ord('r'): # start/stop recording new loop
-            if LOOP_recording is False: #start new loop
+            if loop_recording is False: #start new loop
                 current_loop = LoopThread()
                 current_loop.daemon = True
-                LOOPS.append(current_loop)
+                loops.append(current_loop)
             else:
                 try:
                     dummy = current_loop.loop[-1]
                 except IndexError:
-                    del(LOOPS[-1])
-                    LOOP_recording = not LOOP_recording
+                    del(loops[-1])
+                    loop_recording = not loop_recording
                     current_loop = None
-                    cui.tray_msg("Recording: %s" % LOOP_recording)
+                    cui.tray_msg("Recording: %s" % loop_recording)
                     continue
 
                 # set the wait "before first sample" to time between last "sound" and "end recording"
@@ -105,22 +96,26 @@ if __name__ == "__main__":
 
                 current_loop.loop = itertools.cycle(current_loop.loop)
                 current_loop.start()
-            LOOP_recording = not LOOP_recording
-            cui.tray_msg("Recording: %s" % LOOP_recording)
+            loop_recording = not loop_recording
+            cui.tray_msg("Recording: %s" % loop_recording)
 
         elif event == ord('p'): # stop & delete last loop
             try:
-                LOOPS[-1].stop()
-                del(LOOPS[-1])
+                loops[-1].stop()
+                del(loops[-1])
             except IndexError:
-                LOOPS = []
+                loops = []
+
+        elif event == ord('w'):
+            reverse = not reverse
+            cui.tray_msg('reverse mode' if reverse else '', style=curses.A_BOLD)
 
         try:
             key = KEYS[event]
             try:
-                sample = bank_samples[key]
+                sample = bank_samples[key][int(reverse)]
                 sample.play()
-                if LOOP_recording:
+                if loop_recording:
                     current_loop.loop.append([t-t_prev, sample])
                 t_prev = t
             except KeyError:
