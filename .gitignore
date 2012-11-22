@@ -2,4 +2,6 @@
 .idea
 .hg
 samples/*/*wav_r.wav
-sanples/dl/*
+samples/dl/*
+samples/nonfree/*
+

@@ -12,12 +12,13 @@ def reverse_wav_file(file_path):
     """
         Flips wave file on given path and saves it
     """
-    reversed_file = file_path + '_r.wav'
+    file_path = os.path.sep.join(file_path.split('/'))
+    reversed_file =  file_path + '_r.wav'
     if os.path.exists(reversed_file):
         return reversed_file
 
-    with open(file_path, 'r') as f, open(reversed_file, 'w') as fr:
-        f = wave.open(f)
+    with open(reversed_file, 'w') as fr:
+        f = wave.open(file_path)
         frames = f.getnframes()
         data = f.readframes(frames)
         reversed = audioop.reverse(data, 2) # '2' is the sample width
@@ -55,8 +56,6 @@ def load_banks(bank_kit):
             bank_data = {key: _make_samples(slot) for key, slot in bank.iteritems() if slot['sample']}
             iter_data.append((bank, bank_data, i))
 
-        iterator = itertools.cycle(iter_data)
-
-        return iterator
+        return itertools.cycle(iter_data)
     except IOError, e:
         return None
