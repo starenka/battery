@@ -1,5 +1,8 @@
 import curses
 
+# That's all what MaKeyMaKey has in stock setting, except 'SPC' and 'w'
+AVAILABLE_KEYS = 'LEFT RIGHT DOWN UP a s d f g h j'.split()
+
 class CUI(object):
     BANNER = ''
     HELP_ITEMS = tuple()

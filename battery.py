@@ -1,14 +1,8 @@
 #!/usr/bin/env python
 import curses, argparse, sys, time, threading, itertools
 
-from cui import BatteryCUI
+from cui import BatteryCUI, AVAILABLE_KEYS
 from utils import init_mixer, load_banks
-
-# That's all what MaKeyMaKey has in stock setting, except 'SPC' and 'w'
-AVAILABLE_KEYS = 'LEFT RIGHT DOWN UP a s d f g h j'.split()
-KEYS = dict(
-    [(getattr(curses, 'KEY_%s' % key, ord(key[0])), key) for key in AVAILABLE_KEYS])
-
 
 class LoopThread(threading.Thread):
     def __init__(self):
@@ -36,6 +30,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser('Battery - a simple CLI & headless rompler')
     parser.add_argument('-b', '--bank-kit', action='store', dest='bank_kit', default='default')
     args = parser.parse_args()
+
+    KEYS = dict(
+        [(getattr(curses, 'KEY_%s' % key, ord(key[0])), key) for key in AVAILABLE_KEYS])
 
     init_mixer(8 * len(KEYS)) # Get 8 channels for each key
 
