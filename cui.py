@@ -3,6 +3,7 @@ import curses
 # That's all what MaKeyMaKey has in stock setting, except 'SPC' and 'w'
 AVAILABLE_KEYS = 'LEFT RIGHT DOWN UP a s d f g h j'.split()
 
+
 class CUI(object):
     BANNER = ''
     HELP_ITEMS = tuple()
@@ -41,14 +42,17 @@ class BatteryCUI(CUI):
                   ('p', 'delete last loop'),
                   ('w', 'reverse mode'),
                   ('q', 'exit'),
-                  ('SPACE', 'change bank'))
+                  ('SPACE', 'change bank')
+        )
     BANNER = 'Battery v%s - a simple rompler' % VERSION
 
 
 class BrowserCUI(CUI):
     VERSION = 0.1
-    HELP_ITEMS = (('p', 'play sample'),
-                  ('w', 'reverse mode'),
+    HELP_ITEMS = (('w', 'reverse mode'),
+                  ('m', 'prev sample'),
+                  ('n', 'next sample'),
+                  ('p', 'play'),
                   ('q', 'exit'),
-                  ('SPACE', 'change sample'))
+        )
     BANNER = 'Sample browser v%s' % VERSION

@@ -54,7 +54,7 @@ def discover_samples(dir=SAMPLES_DIR):
         for one in filter(lambda x: not x.endswith('_r.wav') and x.endswith('.wav'), files):
             rel_path = os.path.join(path, one).replace(SAMPLES_DIR,'')[1:]
             samples.append(rel_path)
-    return itertools.cycle(samples)
+    return samples
 
 
 def load_banks(bank_kit, bank_dir=BANKS_DIR):
