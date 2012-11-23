@@ -3,6 +3,7 @@
 from __future__ import division
 import os, itertools, json, wave, audioop
 
+import pygame
 from pygame.mixer import Sound
 
 BASE_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -29,16 +30,28 @@ def reverse_wav_file(file_path):
     return reversed_file
 
 
-def _make_samples(slot):
+def make_sample_tuples(slot, prepend=SAMPLES_DIR):
     """
         Makes Sound instances tuple and sets Sound volumes
     """
-    global SAMPLES_DIR
-    sample_file = os.path.join(SAMPLES_DIR, slot['sample'])
-    samples = Sound(sample_file), Sound(reverse_wav_file(sample_file))
+    sample_file = os.path.join(prepend, slot['sample'])
+    try:
+        samples = Sound(sample_file), Sound(reverse_wav_file(sample_file))
+    except (wave.Error, audioop.error):
+        return None
+
     for one in samples:
         one.set_volume(slot.get('volume', 100) / 100.0)
     return samples
+
+def discover_samples(dir=SAMPLES_DIR):
+    samples = []
+    for path, dirs, files in os.walk(dir, followlinks=True):
+        for one in filter(lambda x: not x.endswith('_r.wav') and x.endswith('.wav'), files):
+            rel_path = os.path.join(path, one).replace(SAMPLES_DIR,'')[1:]
+            samples.append(rel_path)
+    return itertools.cycle(samples)
+
 
 def load_banks(bank_kit):
     """
@@ -50,12 +63,22 @@ def load_banks(bank_kit):
 
     try:
         banks = json.load(open(fname))
-
         iter_data = []
         for i, bank in enumerate(banks, 1):
-            bank_data = {key: _make_samples(slot) for key, slot in bank.iteritems() if slot['sample']}
+            bank_data = {}
+            for key, slot in bank.iteritems():
+                if slot['sample']:
+                    samples = make_sample_tuples(slot)
+                    if samples:
+                        bank_data[key] = samples
             iter_data.append((bank, bank_data, i))
 
         return itertools.cycle(iter_data)
-    except IOError, e:
+    except IOError:
         return None
+
+def init_mixer(channels):
+    # We need to init mixer before pygame initializations, smaller buffer should avoid lags
+    pygame.mixer.pre_init(frequency=44100, size=-16, channels=2, buffer=512)
+    pygame.init()
+    pygame.mixer.set_num_channels(channels) # Get 8 channels for each key

@@ -1,29 +1,14 @@
 #!/usr/bin/env python
 import curses, argparse, sys, time, threading, itertools
 
-import pygame
+from cui import BatteryCUI
+from utils import init_mixer, load_banks
 
-import cui
-from utils import load_banks
-
-
-VERSION = 0.3
 # That's all what MaKeyMaKey has in stock setting, except 'SPC' and 'w'
 AVAILABLE_KEYS = 'LEFT RIGHT DOWN UP a s d f g h j'.split()
 KEYS = dict(
     [(getattr(curses, 'KEY_%s' % key, ord(key[0])), key) for key in AVAILABLE_KEYS])
 
-
-def parse_args():
-    parser = argparse.ArgumentParser('Battery - a simple CLI & headless rompler')
-    parser.add_argument('-b', '--bank-kit', action='store', dest='bank_kit', default='default')
-    return parser.parse_args()
-
-def init_mixer():
-    # We need to init mixer before pygame initializations, smaller buffer should avoid lags
-    pygame.mixer.pre_init(frequency=44100, size=-16, channels=2, buffer=512)
-    pygame.init()
-    pygame.mixer.set_num_channels(8 * len(KEYS)) # Get 8 channels for each key
 
 class LoopThread(threading.Thread):
     def __init__(self):
@@ -47,10 +32,12 @@ class LoopThread(threading.Thread):
         self.running = False
 
 
-
 if __name__ == "__main__":
-    init_mixer()
-    args = parse_args()
+    parser = argparse.ArgumentParser('Battery - a simple CLI & headless rompler')
+    parser.add_argument('-b', '--bank-kit', action='store', dest='bank_kit', default='default')
+    args = parser.parse_args()
+
+    init_mixer(8 * len(KEYS)) # Get 8 channels for each key
 
     banks_iter = load_banks(args.bank_kit)
     if not banks_iter:
@@ -58,14 +45,14 @@ if __name__ == "__main__":
 
     bank_desc, bank_samples, bank_nr = banks_iter.next()
 
-    cui = cui.CUI(VERSION)
-    cui.show_bank(bank_desc, bank_nr)
+    ui = BatteryCUI()
+    ui.show_bank(bank_desc, bank_nr)
 
     reverse, loop_recording, loops = False, False, []
     t_prev, current_loop = 0, None
 
     while True:
-        event = cui.screen.getch()
+        event = ui.screen.getch()
         t = time.time()
 
         if event in (ord('q'), 27): #q or ESC
@@ -73,7 +60,7 @@ if __name__ == "__main__":
 
         elif event == ord(' '): # switch bank on SPACE
             bank_desc, bank_samples, bank_nr = banks_iter.next()
-            cui.show_bank(bank_desc, bank_nr)
+            ui.show_bank(bank_desc, bank_nr)
             continue
 
         elif event == ord('r'): # start/stop recording new loop
@@ -88,7 +75,7 @@ if __name__ == "__main__":
                     del(loops[-1])
                     loop_recording = not loop_recording
                     current_loop = None
-                    cui.tray_msg("Recording: %s" % loop_recording)
+                    ui.tray_msg("Recording: %s" % loop_recording)
                     continue
 
                 # set the wait "before first sample" to time between last "sound" and "end recording"
@@ -97,7 +84,7 @@ if __name__ == "__main__":
                 current_loop.loop = itertools.cycle(current_loop.loop)
                 current_loop.start()
             loop_recording = not loop_recording
-            cui.tray_msg("Recording: %s" % loop_recording)
+            ui.tray_msg("Recording: %s" % loop_recording)
 
         elif event == ord('p'): # stop & delete last loop
             try:
@@ -108,7 +95,7 @@ if __name__ == "__main__":
 
         elif event == ord('w'):
             reverse = not reverse
-            cui.tray_msg('reverse mode' if reverse else '', style=curses.A_BOLD)
+            ui.tray_msg('reverse mode' if reverse else '', style=curses.A_BOLD)
 
         try:
             key = KEYS[event]
@@ -116,10 +103,10 @@ if __name__ == "__main__":
                 sample = bank_samples[key][int(reverse)]
                 sample.play()
                 if loop_recording:
-                    current_loop.loop.append([t-t_prev, sample])
+                    current_loop.loop.append([t - t_prev, sample])
                 t_prev = t
             except KeyError:
-                cui.tray_msg('No sample defined for "%s" key\n' % key, row=1, style=curses.A_DIM)
+                ui.tray_msg('No sample defined for "%s" key\n' % key, row=1, style=curses.A_DIM)
         except KeyError:
             pass
 

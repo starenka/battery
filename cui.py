@@ -1,7 +1,10 @@
 import curses
 
 class CUI(object):
-    def __init__(self, version):
+    BANNER = ''
+    HELP_ITEMS = tuple()
+
+    def __init__(self):
         screen = curses.initscr()
         curses.noecho()
         curses.curs_set(0)
@@ -9,15 +12,12 @@ class CUI(object):
         self.LINES, self.COLS = screen.getmaxyx()
         self.screen = screen
 
-        self.version = version
-
-        self._init_cui()
+        self._init_cui(self.BANNER, self.HELP_ITEMS)
 
 
-    def _init_cui(self):
-        self.screen.addstr(0, 0, 'Battery v%s - a simple rompler'.center(self.COLS) % self.version, curses.A_BOLD)
-        for key, text in (('r', 'loop record/play'), ('p', 'delete last loop'),
-            ('w', 'reverse mode'), ('q', 'exit'), ('SPACE', 'change bank')):
+    def _init_cui(self, banner, help_items):
+        self.screen.addstr(0, 0, banner.center(self.COLS), curses.A_BOLD)
+        for key, text in help_items:
             self.screen.insstr(self.LINES - 1, 0, ' %s\t' % text)
             self.screen.insstr(self.LINES - 1, 0, key, curses.A_REVERSE)
 
@@ -32,4 +32,20 @@ class CUI(object):
         self.screen.addstr(self.LINES - 2 - row, 0, msg.ljust(self.COLS - 1), style)
 
 
+class BatteryCUI(CUI):
+    VERSION = 0.3
+    HELP_ITEMS = (('r', 'loop record/play'),
+                  ('p', 'delete last loop'),
+                  ('w', 'reverse mode'),
+                  ('q', 'exit'),
+                  ('SPACE', 'change bank'))
+    BANNER = 'Battery v%s - a simple rompler' % VERSION
 
+
+class BrowserCUI(CUI):
+    VERSION = 0.1
+    HELP_ITEMS = (('p', 'play sample'),
+                  ('w', 'reverse mode'),
+                  ('q', 'exit'),
+                  ('SPACE', 'change sample'))
+    BANNER = 'Sample browser v%s' % VERSION
