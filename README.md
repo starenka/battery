@@ -6,4 +6,12 @@ Once you've started the sampler use `a`, `s`, `d`, `f`, `g`, `h`, `j` and `arrow
 
 I've bundled Kawai XD-5 drum samples from Hydrogen, you can get more free samples by runing `get_samples.sh` script. It expects you to have wget and rar binaries on your system.
 
+More or less current screenshot:
+
  ![screenshot](http://junk.starenka.net/battery03.jpg)
+
+This is how the drums would look like if use something you normally have at home: tinfoil and cardboard ;)
+
+ ![drums](http://farm9.staticflickr.com/8470/8123065467_61eb2f3be3.jpg)
+
+To check it in action (captured screen video, with bad sound and even worse music), click this [video](http://www.youtube.com/watch?v=Bm0dp61zsxE)....
