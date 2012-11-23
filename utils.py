@@ -46,6 +46,9 @@ def make_sample_tuples(slot, prepend=SAMPLES_DIR):
     return samples
 
 def discover_samples(dir=SAMPLES_DIR):
+    """
+        Walks SAMPLES dir and gets all available samples
+    """
     samples = []
     for path, dirs, files in os.walk(dir, followlinks=True):
         for one in filter(lambda x: not x.endswith('_r.wav') and x.endswith('.wav'), files):
@@ -79,7 +82,10 @@ def load_banks(bank_kit, bank_dir=BANKS_DIR):
     return itertools.cycle(iter_data)
 
 def init_mixer(channels):
-    # We need to init mixer before pygame initializations, smaller buffer should avoid lags
+    """
+        Init's pygame's mixes & pygame itself
+        We need to init mixer before pygame initializations, smaller buffer should avoid lags
+    """
     pygame.mixer.pre_init(frequency=44100, size=-16, channels=2, buffer=512)
     pygame.init()
     pygame.mixer.set_num_channels(channels)
