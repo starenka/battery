@@ -12,13 +12,13 @@ class LoopThread(threading.Thread):
 
     def run(self):
         try:
-            self.loop.next()[1].play()
+            next(self.loop)[1].play()
         except StopIteration:
             return
 
         self.running = True
         while self.running:
-            sleep_time, sample = self.loop.next()
+            sleep_time, sample = next(self.loop)
             time.sleep(sleep_time)
             sample.play()
 
@@ -56,7 +56,7 @@ if __name__ == "__main__":
             break
 
         elif event == ord(' '): # switch bank on SPACE
-            bank_desc, bank_samples, bank_nr = banks_iter.next()
+            bank_desc, bank_samples, bank_nr = next(banks_iter)
             ui.show_bank(bank_desc, bank_nr)
             continue
 
@@ -110,4 +110,4 @@ if __name__ == "__main__":
     # This should somehow restore terminal back, but it doesn't work all the time.
     # Call "reset" in your shell if you need to
     curses.endwin()
-    sys.exit(0)
+    sys.exit()
