@@ -33,7 +33,6 @@ def _make_samples(slot):
     """
         Makes Sound instances tuple and sets Sound volumes
     """
-    global SAMPLES_DIR
     sample_file = os.path.join(SAMPLES_DIR, slot['sample'])
     samples = Sound(sample_file), Sound(reverse_wav_file(sample_file))
     for one in samples:
@@ -45,7 +44,6 @@ def load_banks(bank_kit):
         Loads bank kit definition from file and populates banks
         with Sound instances (both original wave & reversed one)
     """
-    global BASE_DIR
     fname = os.path.join(BASE_DIR, 'banks', '%s.json' % bank_kit)
 
     try:
