@@ -88,7 +88,7 @@ if __name__ == "__main__":
                     del(loops[-1])
                     loop_recording = not loop_recording
                     current_loop = None
-                    cui.tray_msg("Recording: %s" % loop_recording)
+                    cui.tray_msg('recording: %s' % ('on' if loop_recording else 'off'), style=curses.A_BOLD)
                     continue
 
                 # set the wait "before first sample" to time between last "sound" and "end recording"
@@ -97,18 +97,19 @@ if __name__ == "__main__":
                 current_loop.loop = itertools.cycle(current_loop.loop)
                 current_loop.start()
             loop_recording = not loop_recording
-            cui.tray_msg("Recording: %s" % loop_recording)
+            cui.tray_msg('recording: %s' % ('on' if loop_recording else 'off'), style=curses.A_BOLD)
 
         elif event == ord('p'): # stop & delete last loop
             try:
                 loops[-1].stop()
                 del(loops[-1])
+                cui.tray_msg('last loop stopped & deleted', style=curses.A_BOLD)
             except IndexError:
                 loops = []
 
         elif event == ord('w'):
             reverse = not reverse
-            cui.tray_msg('reverse mode' if reverse else '', style=curses.A_BOLD)
+            cui.tray_msg('reverse mode: %s' % ('on' if reverse else 'off'), style=curses.A_BOLD)
 
         try:
             key = KEYS[event]
